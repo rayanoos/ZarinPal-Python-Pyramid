@@ -37,15 +37,15 @@ def payment(request):
         return 'Error!'
 
 @view_config(route_name='verify', renderer='string')
-def verify(request):
+def verify():
     client = Client(ZARINPAL_WEBSERVICE)
 
-    if request.GET['Status'] == 100:
-        result = client.PaymentVerification(MMERCHANT_ID, request.params['Authority'], amount)
+    if request.args.get('Status') == 'OK':
+        result = client.service.PaymentVerification(MMERCHANT_ID, request.args.get('Authority'), amount)
 
         if result.Status == 100:
             return 'Transaction success. RefID: ' + str(result.RefID))
-        elif result.status == 101:
+        elif result.Status == 101:
             return 'Transaction submitted : ' + str(result.Status)
         else:
             return 'Transaction failed. Status: ' + str(result.Status)
